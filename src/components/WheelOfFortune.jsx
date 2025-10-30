@@ -17,7 +17,7 @@ const WheelOfFortune = () => {
   const prizes = [
     { 
       id: 1, 
-      name: 'Tente Novamente', 
+      name: 'Não foi dessa vez', 
       color: '#D1D5DB', 
       probability: 35, 
       svg: (
@@ -99,14 +99,13 @@ const WheelOfFortune = () => {
     }
   ]
 
-  const spinWheel = () => {
+  const spinWheel = async () => {
     if (isSpinning || hasSpinned || !hasSurveyCompleted) return
 
     setIsSpinning(true)
     setShowResult(false)
     setSpinError(null)
     
-    // Gerar resultado baseado nas probabilidades
     const random = Math.random() * 100
     let cumulative = 0
     let selectedPrize = prizes[0]
@@ -119,14 +118,19 @@ const WheelOfFortune = () => {
       }
     }
 
-    // Calcular rotação (múltiplas voltas + posição final)
-    const spins = 8 + Math.random() * 4 // 8-12 voltas completas para melhor visualização
     const prizeIndex = prizes.findIndex(p => p.id === selectedPrize.id)
-    const segmentAngle = 360 / prizes.length
-    const finalAngle = (prizeIndex * segmentAngle) + (segmentAngle / 2)
-    const totalRotation = rotation + (spins * 360) + finalAngle
+    const count = prizes.length
+    const delta = 360 / count
+    const segmentStart = prizeIndex * delta - 90
+    const segmentCenter = segmentStart + delta / 2
+    const targetAngle = -segmentCenter
+    const spins = 1800
+    const finalRotation = targetAngle + spins - 90
 
-    setRotation(totalRotation)
+    setRotation(0)
+    await new Promise(resolve => setTimeout(resolve, 100))
+    
+    setRotation(finalRotation)
 
     // Mostrar resultado após a animação
     setTimeout(async () => {
@@ -134,7 +138,6 @@ const WheelOfFortune = () => {
       setShowResult(true)
       setIsSpinning(false)
       
-      // Registrar a rotação no Firebase
       if (userEmail) {
         try {
           await recordSpin(userEmail, {
@@ -189,12 +192,17 @@ const WheelOfFortune = () => {
             🎰 Roleta da Sorte
           </h2>
           <div className="w-24 h-1 bg-truffle-caramel mx-auto mb-8"></div>
-          <p className="text-lg text-gray-700 max-w-2xl mx-auto">
-            Gire a roleta e tente a sorte! Você pode ganhar descontos incríveis ou até uma trufa grátis! 
-            <span className="block mt-2 text-sm text-gray-500">
-              (Uma chance por cliente via QR Code)
-            </span>
+          <p className="text-lg text-gray-700 max-w-2xl mx-auto mb-4">
+            Gire a roleta e ganhe prêmios incríveis!
           </p>
+          <div className="bg-yellow-50 border-2 border-yellow-400 p-4 rounded-xl max-w-2xl mx-auto">
+            <p className="text-gray-800 font-semibold mb-2">🎁 Prêmios disponíveis:</p>
+            <ul className="text-sm text-gray-700 space-y-1">
+              <li>🍫 <strong>1 trufa grátis</strong> (escolha seu sabor!)</li>
+              <li>💰 Cupons de <strong>5%, 10%, 15% ou 20% OFF</strong> para sua próxima compra</li>
+              <li>🎲 <strong>Uma chance por email</strong> via QR Code</li>
+            </ul>
+          </div>
         </motion.div>
 
         <div className="max-w-2xl mx-auto">
@@ -360,7 +368,7 @@ const WheelOfFortune = () => {
                   {result.name}
                 </h3>
 
-                {result.name === 'Tente Novamente' ? (
+                {result.name === 'Não foi dessa vez' ? (
                   <div className="bg-gradient-to-r from-purple-100 to-pink-100 p-6 rounded-2xl mb-6">
                     <p className="text-lg text-gray-700">
                       Não foi dessa vez, mas obrigado por participar! 💝
@@ -369,17 +377,25 @@ const WheelOfFortune = () => {
                       Continue nos acompanhando nas redes sociais!
                     </p>
                   </div>
+                ) : result.name.includes('Trufa') ? (
+                  <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white p-6 rounded-2xl mb-6">
+                    <p className="text-xl font-bold mb-2">🎉 Parabéns! 🎉</p>
+                    <p className="text-lg mb-3">
+                      Mostre esta tela para resgatar sua <strong>trufa grátis AGORA</strong>!
+                    </p>
+                    <p className="text-sm opacity-90">
+                      Escolha seu sabor: Brigadeiro, Beijinho ou Doce de Leite! 🍫
+                    </p>
+                  </div>
                 ) : (
                   <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white p-6 rounded-2xl mb-6">
                     <p className="text-xl font-bold mb-2">🎉 Parabéns! 🎉</p>
-                    <p className="text-lg">
-                      Mostre esta tela para resgatar seu prêmio em sua próxima compra!
+                    <p className="text-lg mb-3">
+                      Você ganhou <strong>{result.name}</strong>!
                     </p>
-                    {result.name.includes('Trufa') && (
-                      <p className="text-sm mt-2 opacity-90">
-                        Escolha seu sabor favorito: Brigadeiro, Beijinho ou Doce de Leite! 🍫
-                      </p>
-                    )}
+                    <p className="text-sm opacity-90">
+                      Mostre esta tela em sua <strong>próxima compra</strong> para usar seu desconto!
+                    </p>
                   </div>
                 )}
 

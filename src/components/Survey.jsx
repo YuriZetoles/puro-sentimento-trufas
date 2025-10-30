@@ -34,10 +34,21 @@ const Survey = () => {
     setError(null)
 
     try {
-      // Validações básicas
+      // Validações obrigatórias
+      if (!formData.name || formData.name.trim().length < 2) {
+        throw new Error('Nome é obrigatório (mínimo 2 caracteres)!')
+      }
+      
       if (!formData.email) {
         throw new Error('E-mail é obrigatório!')
       }
+      
+      // Validar formato de email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(formData.email)) {
+        throw new Error('Por favor, insira um e-mail válido!')
+      }
+      
       if (!formData.satisfaction || !formData.favoriteProduct || !formData.recommendation || !formData.frequency) {
         throw new Error('Por favor, responda todas as perguntas obrigatórias!')
       }
@@ -86,9 +97,20 @@ const Survey = () => {
             📋 Pesquisa de Satisfação
           </h2>
           <div className="w-24 h-1 bg-truffle-caramel mx-auto mb-8"></div>
-          <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-700 max-w-2xl mx-auto mb-4">
             Sua opinião é muito importante para nós! Ajude-nos a melhorar cada vez mais.
           </p>
+          <div className="bg-gradient-to-r from-truffle-gold/20 to-truffle-caramel/20 border-2 border-truffle-gold p-6 rounded-xl max-w-2xl mx-auto">
+            <p className="text-truffle-dark font-semibold text-lg mb-2">
+              🎁 Complete a pesquisa e GANHE uma chance de girar a Roleta da Sorte!
+            </p>
+            <ul className="text-left text-gray-700 space-y-2">
+              <li>✅ Email obrigatório para participar</li>
+              <li>🍫 Chance de ganhar <strong>1 trufa grátis</strong></li>
+              <li>💰 Cupons de desconto de até <strong>20% OFF</strong> para sua próxima compra</li>
+              <li>🎲 <strong>Uma chance por email</strong> - não perca!</li>
+            </ul>
+          </div>
         </motion.div>
 
         <motion.div
@@ -103,28 +125,32 @@ const Survey = () => {
               {/* Nome */}
               <div>
                 <label className="block text-truffle-dark font-semibold mb-2">
-                  Nome (opcional)
+                  Nome <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
+                  required
+                  minLength={2}
                   className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-truffle-caramel focus:outline-none transition-colors"
-                  placeholder="Seu nome"
+                  placeholder="Seu nome completo"
                 />
               </div>
 
               {/* Email */}
               <div>
                 <label className="block text-truffle-dark font-semibold mb-2">
-                  E-mail (opcional)
+                  E-mail <span className="text-red-500">*</span>
+                  <span className="text-sm font-normal text-gray-600 ml-2">(obrigatório para girar a roleta)</span>
                 </label>
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
+                  required
                   className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-truffle-caramel focus:outline-none transition-colors"
                   placeholder="seu@email.com"
                 />
@@ -183,7 +209,6 @@ const Survey = () => {
                   className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-truffle-caramel focus:outline-none transition-colors"
                 >
                   <option value="">Selecione...</option>
-                  <option value="primeira-vez">É minha primeira vez</option>
                   <option value="semanal">Semanalmente</option>
                   <option value="quinzenal">Quinzenalmente</option>
                   <option value="mensal">Mensalmente</option>
