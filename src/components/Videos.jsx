@@ -6,9 +6,21 @@ const Videos = () => {
   const videos = [
     {
       id: 1,
+      title: 'Mario e Trufas - PS: Puro Sentimento',
+      embedUrl: 'https://www.youtube.com/embed/XdljuQpIQ5E',
+      description: 'O herói bigodudo recomenda: pule para um novo nível de sabor com estas trufas!'
+    },
+    {
+      id: 2,
+      title: 'Sonic e Trufas - PS: Puro Sentimento',
+      embedUrl: 'https://www.youtube.com/embed/bpyG-h3Lqk0',
+      description: 'Rápido! Garanta a sua. Sonic aprova a velocidade e o sabor incrível destas trufas.'
+    },
+    {
+      id: 3,
       title: 'Como Fazer Trufas de Chocolate',
-      embedUrl: 'https://www.youtube.com/embed/27zUpCjD900?si=qqMASYrQdycpXugO',
-      description: 'Aprenda a fazer trufas deliciosas passo a passo'
+      embedUrl: 'https://www.youtube.com/embed/IKRt_60aZoc',
+      description: 'O maior especialista em doces convida você a provar uma criação mágica. Uma delícia pura!'
     }
   ]
 
