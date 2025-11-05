@@ -99,7 +99,7 @@ const Products = () => {
                 </p>
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-2xl text-truffle-caramel">
-                    R$ 6,00
+                    R$ 5,00
                   </span>
                   <span className="text-sm text-gray-500">unidade</span>
                 </div>
